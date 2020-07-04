@@ -8,9 +8,9 @@ namespace Codenavirus
     {
         static void Main(string[] args)
         {
-            string[,] world = new string[3, 3] { { "#", "#", "#" }, { "#", "#", "#" }, { "#", "#", "#" }, };
+            char[][] world = new char[3][] { new char[] { '#', '#', '#' }, new char[] { '#', '#', '#' }, new char[] { '#', '#', '#' } };
             int[] firstInfected = { 1, 1 };
-            int[] result = CodenavirusEpidemic(world, firstInfected);
+            int[] result = Codenavirus(world, firstInfected);
 
             Console.WriteLine();
             Console.Write("Result: [");
@@ -25,7 +25,7 @@ namespace Codenavirus
             Console.ReadKey();
         }
 
-        public static int[] CodenavirusEpidemic(string[,] world, int[] firstInfected)
+        public static int[] Codenavirus (char[][] world, int[] firstInfected)
         {
             bool spread = true;
 
@@ -37,32 +37,32 @@ namespace Codenavirus
 
             //just printing the first day and converting # to H
             Console.WriteLine("Day 0: ");
-            for (int row = 0; row < world.GetLength(0); row++)
+            for (int row = 0; row < world.Length; row++)
             {
                 Console.WriteLine();
-                for (int column = 0; column < world.GetLength(1); column++)
+                for (int column = 0; column < world[row].Length; column++)
                 {
-                    if (world[row, column].Equals("#"))
+                    if (world[row][column].Equals('#'))
                     {
-                        world[row, column] = "H";
+                        world[row][column] = 'H';
                     }
-                    Console.Write(world[row, column] + " ");
+                    Console.Write(world[row][column]+ " ");
                 }
                 Console.WriteLine();
             }
 
             //changing the first infected from H to I
-            world[firstInfected[0], firstInfected[1]] = "I";
+            world[firstInfected[0]][firstInfected[1]] = 'I';
 
             //print day 1 matrix with first infected
             Console.WriteLine();
             Console.WriteLine("Day 1:");
-            for (int row = 0; row < world.GetLength(0); row++)
+            for (int row = 0; row < world.Length; row++)
             {
                 Console.WriteLine();
-                for (int column = 0; column < world.GetLength(1); column++)
+                for (int column = 0; column < world[row].Length; column++)
                 {
-                    Console.Write(world[row, column] + " ");
+                    Console.Write(world[row][column] + " ");
                 }
                 Console.WriteLine();
             }
@@ -82,14 +82,14 @@ namespace Codenavirus
                     //3 days have passed, set to R
                     if ((log[i].Day + 3) == day)
                     {
-                        world[log[i].Place[0], log[i].Place[1]] = "R";
+                        world[log[i].Place[0]][log[i].Place[1]] = 'R';
                     }
                 }
                 try
                 {
-                    if (world[lastInfected[0], lastInfected[1] + 1].Equals("H"))
+                    if (world[lastInfected[0]][lastInfected[1] + 1].Equals('H'))
                     {
-                        world[lastInfected[0], lastInfected[1] + 1] = "I";
+                        world[lastInfected[0]][lastInfected[1] + 1] = 'I';
                         newInfection[0] = lastInfected[0];
                         newInfection[1] = lastInfected[1] + 1;
                         log.Add(new InfectedLog(newInfection, day));
@@ -105,9 +105,9 @@ namespace Codenavirus
                 {
                     try
                     {
-                        if (world[lastInfected[0] - 1, lastInfected[1]].Equals("H") && !infected)
+                        if (world[lastInfected[0] - 1][lastInfected[1]].Equals('H') && !infected)
                         {
-                            world[lastInfected[0] - 1, lastInfected[1]] = "I";
+                            world[lastInfected[0] - 1][lastInfected[1]] = 'I';
                             newInfection[0] = lastInfected[0] - 1;
                             newInfection[1] = lastInfected[1];
                             log.Add(new InfectedLog(newInfection, day));
@@ -123,9 +123,9 @@ namespace Codenavirus
                     {
                         try
                         {
-                            if (world[lastInfected[0], lastInfected[1] - 1].Equals("H") && !infected)
+                            if (world[lastInfected[0]][lastInfected[1] - 1].Equals('H') && !infected)
                             {
-                                world[lastInfected[0], lastInfected[1] - 1] = "I";
+                                world[lastInfected[0]][lastInfected[1] - 1] = 'I';
                                 newInfection[0] = lastInfected[0];
                                 newInfection[1] = lastInfected[1] - 1;
                                 log.Add(new InfectedLog(newInfection, day));
@@ -141,9 +141,9 @@ namespace Codenavirus
                         {
                             try
                             {
-                                if (world[lastInfected[0] + 1, lastInfected[1]].Equals("H") && !infected)
+                                if (world[lastInfected[0] + 1][lastInfected[1]].Equals('H') && !infected)
                                 {
-                                    world[lastInfected[0] + 1, lastInfected[1]] = "I";
+                                    world[lastInfected[0] + 1][lastInfected[1]] = 'I';
                                     newInfection[0] = lastInfected[0] + 1;
                                     newInfection[1] = lastInfected[1];
                                     log.Add(new InfectedLog(newInfection, day));
@@ -161,14 +161,13 @@ namespace Codenavirus
                 else
                     spread = false;
 
-
                 //print changed matrix with newly infected person
-                for (int row = 0; row < world.GetLength(0); row++)
+                for (int row = 0; row < world.Length; row++)
                 {
                     Console.WriteLine();
-                    for (int column = 0; column < world.GetLength(1); column++)
+                    for (int column = 0; column < world[row].Length; column++)
                     {
-                        Console.Write(world[row, column] + " ");
+                        Console.Write(world[row][column] + " ");
                     }
                     Console.WriteLine();
                 }
@@ -179,21 +178,33 @@ namespace Codenavirus
             int numberOfRecovered = 0;
             int numberOfUninfected = 0;
 
-            for (int row = 0; row < world.GetLength(0); row++)
+            for (int row = 0; row < world.Length; row++)
             {
-                for (int column = 0; column < world.GetLength(1); column++)
+                for (int column = 0; column < world[row].Length; column++)
                 {
-                    if (world[row, column].Equals("H"))
+                    if (world[row][column].Equals('H'))
                         numberOfUninfected++;
-                    else if (world[row, column].Equals("I"))
+                    else if (world[row][column].Equals('I'))
                         numberOfInfected++;
-                    else if (world[row, column].Equals("R"))
+                    else if (world[row][column].Equals('R'))
                         numberOfRecovered++;
                 }
             }
 
             int[] result = { day, numberOfInfected, numberOfRecovered, numberOfUninfected };
             return result;
+        }
+    }
+
+    internal class InfectedLog
+    {
+        public int[] Place;
+        public int Day;
+
+        public InfectedLog(int[] place, int day)
+        {
+            Place = place;
+            Day = day;
         }
     }
 }
